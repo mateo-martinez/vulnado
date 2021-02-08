@@ -1,6 +1,14 @@
 # Starter pipeline
 - task: Application security testing@2020
   inputs:
+    projectName: 'Vulnado'
+    enableProxy: false
+    enableSastScan: true
+    CheckmarxService: 'Checkmarx CxSAST'
+    fullTeamName: 'CxServer\SP\EMEA\LATAM\kmhcorp2'
+    enableDependencyScan: false
+- task: Application security testing@2020
+  inputs:
     projectName: 'PoC desde Azure'
     enableSastScan: true
     CheckmarxService: 'Postobon Checkmarx Instance PoC'
