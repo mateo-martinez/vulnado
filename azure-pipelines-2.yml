@@ -13,6 +13,6 @@ steps:
     branchName: '$(Build.SourceBranchName)'
     tenantName: 'nfr_lugapel-ast'
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
+    echo Demo Pipeline with Azure DevOps
+    echo Lugapel your prefered Checkmarx ditributor
   displayName: 'Run a multi-line script'
