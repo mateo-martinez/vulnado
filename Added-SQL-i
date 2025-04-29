@@ -1,0 +1,38 @@
+# vulnado/routes/sqli.py
+import sqlite3
+from tornado.web import RequestHandler
+
+# In-memory SQLite DB for demo
+def init_db():
+    conn = sqlite3.connect(":memory:")
+    c = conn.cursor()
+    c.execute("CREATE TABLE users (username TEXT, password TEXT)")
+    c.execute("INSERT INTO users VALUES ('admin', 'password123')")
+    conn.commit()
+    return conn
+
+db = init_db()
+
+class SQLiDemoHandler(RequestHandler):
+    def get(self):
+        self.write("""
+            <form method="POST">
+                Username: <input name="username"><br>
+                Password: <input name="password" type="password"><br>
+                <input type="submit" value="Login">
+            </form>
+        """)
+
+    def post(self):
+        username = self.get_body_argument("username")
+        password = self.get_body_argument("password")
+        query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+        try:
+            cursor = db.execute(query)
+            result = cursor.fetchone()
+            if result:
+                self.write(f"Welcome, {username}!")
+            else:
+                self.write("Login failed.")
+        except Exception as e:
+            self.write(f"Error: {e}")
