@@ -1,0 +1,25 @@
+# vulnado/routes/file_injection.py
+import os
+from tornado.web import RequestHandler
+
+SAFE_BASE = os.path.abspath("demo_files")  # Directory for safe demo files
+
+class FileInjectionDemoHandler(RequestHandler):
+    def get(self):
+        self.write("""
+            <form method="GET">
+                Filename: <input name="filename"><br>
+                <input type="submit" value="View File">
+            </form>
+        """)
+        filename = self.get_argument("filename", None)
+        if filename:
+            try:
+                filepath = os.path.abspath(os.path.join(SAFE_BASE, filename))
+                if not filepath.startswith(SAFE_BASE):
+                    raise ValueError("Directory traversal detected.")
+                with open(filepath, "r") as f:
+                    content = f.read()
+                self.write(f"<pre>{content}</pre>")
+            except Exception as e:
+                self.write(f"<p>Error: {e}</p>")
